@@ -1,7 +1,6 @@
 name: CI devops 2023
 
 on:
-  # To begin, you want to launch this job in main and develop
   push:
     branches:
       - main
@@ -9,25 +8,19 @@ on:
   pull_request:
 
 jobs:
-  test-backend: 
+  test-backend:
     runs-on: ubuntu-22.04
     steps:
-      # Checkout your GitHub code using actions/checkout@v2.5.0
       - uses: actions/checkout@v2.5.0
 
-      # Do the same with another action (actions/setup-java@v2) that enables setting up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '17'
 
-      # Finally, build your app with the latest command
       - name: Build and test with Maven
-        run: |
-          cd simple-api  
-          mvn clean verify
-
+        run: mvn clean verify
 
   build-and-push-docker-image:
     needs: test-backend
@@ -36,20 +29,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
           context: ./simple-api
           tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
-          context: ./database"  # Update this to the actual path where your database Dockerfile is located
+          context: ./database
           tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-database:latest
 
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
-          context: ./httpd-server"  # Update this to the actual path where your httpd Dockerfile is located
+          context: ./httpd
           tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-httpd:latest
