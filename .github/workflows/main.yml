@@ -25,7 +25,7 @@ jobs:
       #     mvn clean verify
 
       - name: Run SonarQube Analysis
-        run: mvn -B verify sonar:sonar -Dsonar.P-LouisCre_devops-livecoding=devops-2023 -Dsonar.p-louiscre=devops-school -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./simple-api/pom.xml
+        run: mvn -B verify sonar:sonar -Dsonar.P-LouisCre=devops-2023 -Dsonar.p-louiscre=devops-school -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
 
   build-and-push-docker-image:
     needs: test-backend
