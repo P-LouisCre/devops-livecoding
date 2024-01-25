@@ -20,7 +20,9 @@ jobs:
           java-version: '17'
 
       - name: Build and test with Maven
-        run: mvn clean verify
+        run: |
+          cd simple-api  # Change to your project directory
+          mvn clean verify
 
   build-and-push-docker-image:
     needs: test-backend
