@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and test with Maven
         run: |
-          cd simple-api  # Change to your project directory
+          cd simple-api
           mvn clean verify
 
   build-and-push-docker-image:
